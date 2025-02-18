@@ -1,3 +1,5 @@
+# SQL Injection Lab 02 - SQL injection vulnerability allowing login bypass
+
 ## Manual Solution
 
 1. Open the lab in Web Security Academy.

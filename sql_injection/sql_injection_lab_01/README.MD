@@ -1,3 +1,5 @@
+# SQL Injection Lab 01 - SQL injection vulnerability in WHERE clause allowing retrieval of hidden data
+
 ## Manual Solution
 
 1. Open the lab in Web Security Academy.
