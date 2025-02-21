@@ -33,9 +33,6 @@
      * Second position: Character to test
        - Payload type: Brute forcer (a-z, 0-9)
 
-### 7. Send the request
-- Send the request to the Repeater.
-- You will see the congratulations message after 10 seconds.
 
 ## Automated Solution
 
