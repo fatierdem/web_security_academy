@@ -4,7 +4,18 @@
 
 ### 1. Open the lab in Web Security Academy.
 ### 2. Open the login page.
-### 3. Log in with the username administrator'-- and any password you want.
+### 3. Log in with the username `administrator` and any password you want.
+- When we click the login button, the following SQL query is executed in the background: 
+```sql 
+SELECT * FROM users WHERE username = 'administrator' and password = 'your_password'
+```
+
+### 4. Log in with the username `administrator'--` and any password you want.
+- When we click the login button, the following SQL query is executed in the background: 
+```sql
+SELECT * FROM users WHERE username = 'administrator'--' AND password = 'your_password'
+```
+- As you can see, the password verification in the SQL query is bypassed due to the comment sequence.
 
 ## Automated Solution
 
