@@ -5,7 +5,8 @@
 ### 1. Access the Lab
 - Access the Web Security Academy lab.
 
-### 2. Make a search with the payload `<script>alert("XSS")</script>`
+### 2. Perform a new search 
+- Payload: `<script>alert("XSS")</script>`
 - The payload will be reflected in the search results page.
 
 ## Automated Solution

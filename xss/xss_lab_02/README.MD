@@ -7,7 +7,7 @@
 
 ### 2. Open a post in the blog
 
-### 3. Make a comment
+### 3. Create a comment
 - Comment: `<script>alert('XSS')</script>`
 - Name: `Anything`
 - Email: `Anything@anything.com`

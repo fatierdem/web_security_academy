@@ -5,7 +5,7 @@
 ### 1. Access the Lab
 - Access the Web Security Academy lab.
 
-### 2. Make a search query
+### 2. Perform a new search
 - Search query: `test`
 - Press F12 or right click -> Inspect
 - Notice the `trackSearch` function. This function getting the query from the URL and passing it to the `document.write` function.
@@ -20,7 +20,7 @@ if(query) {
 ```
 - Notice that the query is placed in the img tag. `<img src="/resources/images/tracker.gif?searchTerms=test">`
 
-### 3. Make a new search query
+### 3. Perform a new search
 - Query: `"><svg onload=alert("XSS")>` 
 - This breaks the HTML structure and adds a svg tag. 
 - `<img src="/resources/images/tracker.gif?searchTerms="> <svg onload=alert("XSS")>`
@@ -31,7 +31,7 @@ if(query) {
 ## Automated Solution
 
 ### 1. Download the script
-### 2. Run the script with the following command: python xss_lab_02.py -u <target_url> -p (if you want to use proxy 127.0.0.1:8080)
+### 2. Run the script with the following command: python xss_lab_03.py -u <target_url> -p (if you want to use proxy 127.0.0.1:8080)
 
 
 

