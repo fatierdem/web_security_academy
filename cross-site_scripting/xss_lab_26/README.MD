@@ -16,7 +16,7 @@
 ### 3. Perform a search.
 - Open the Network tab and perform an ordinary search.
 - Notice the CSP header. The CSP restricts scripts.
-![Search Request Screenshot](./images/CSP.png)
+![Search Request Screenshot](./images/CSP.PNG)
 
 ### 4. Exploit Overview
 - We can't execute script on the website but the website uses AngularJS. We can execute scripts using `ng-focus`. `ng-focus` triggers a script when focused on an HTML element

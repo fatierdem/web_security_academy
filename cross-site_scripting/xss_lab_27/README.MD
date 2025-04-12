@@ -19,10 +19,10 @@
 - Modify the search parameter like this `/?search=<§§`
 - Visit the following URL and copy the list of tags: [PortSwigger XSS Cheat Sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet).
 - Add the following payload to the payload list in Burp Suite:
-![payload](./images/Payload.png)
+![payload](./images/Payload.PNG)
 - Paste the tags you copied into the payload list. Then click `Start attack`.
 - The tags that return a 200 OK status code are considered unblocked.
-![tags](./images/Tags.png)
+![tags](./images/Tags.PNG)
 
 ### 4. Solving the lab.
 - In this lab We can use the `svg` tag. Perform a search with the following payload `<svg> </svg>` and notice that the tag is unblocked.
