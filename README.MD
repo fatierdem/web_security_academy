@@ -6,4 +6,4 @@ This repository contains solutions and explanations for various security labs on
 
 - [SQL Injection](./sql_injection/)
 - [Cross-Site Scripting (XSS)](./cross-site_scripting/)
-- [Cross-Site Request Forgery (CSRF)](./csrf/)
+- [Cross-Site Request Forgery (CSRF)](./cross-site_request_forgery/)
